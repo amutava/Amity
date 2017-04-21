@@ -15,13 +15,19 @@ class TestAmity(unittest.TestCase):
         self.assertEqual(self.amity.add_person("Catherine Mutava", "Staff", "N"),
                          "Employee added successfully.")
 
+    def test_add_person_duplicate(self):
+        """ This method tests that a person can be added successfully to the system."""
+        self.amity.add_person("Catherine Mutava", "Staff", "N")
+        self.assertEqual(self.amity.add_person("Catherine Mutava", "Staff", "N"),
+                         "Employee with the given name exists in the system.")
+
     def test_create_room(self):
     	""" This method creates rooms of the given type """
     	self.assertEqual(self.amity.create_room(["Valhalla", "Camelot", "Krypton", "Accra", "Hogwarts"], "Office"), "Rooms created successfully.")
     
     def test_create_room_duplicates(self):
         """ This method creates rooms of the given type """
-        self.amity.create_room("Valhalls", "Office")
+        self.amity.create_room("Valhala", "Office")
         self.assertEqual(self.amity.create_room(["Valhalla", "Camelot", "Krypton", "Accra", "Hogwarts"], "Office"), "Sorry system does not allow duplicate rooms.")
 
 
@@ -29,18 +35,33 @@ class TestAmity(unittest.TestCase):
     	""" This method allocates employee to the office they request."""
     	self.amity.add_person("Catherine Mutava", "Staff", "N")
     	self.amity.create_room(["Hogwarts"], "Office")
-        self.assertEqual(self.amity.allocate_employee("Angela Mutava", "Hogwarts"), "Employee allocated successfully.")
+        self.assertEqual(self.amity.allocate_employee("Catherine Mutava", "Hogwarts"), "Employee allocated successfully.")
+
+    def test_allocate_employee_to the_same_room(self):
+        """ This method allocates employee to the office they request."""
+        self.amity.add_person("Catherine Mutava", "Staff", "N")
+        self.amity.create_room(["Hogwarts"], "Office")
+        self.amity.allocate_employee("Catherine Mutava", "Hogwarts")
+        self.assertEqual(self.amity.allocate_employee("Catherine Mutava", "Hogwarts"), "You already have a space in the room.")    
 
     def test_allocate_employee_more_than_6_in_an_office(self):
         """ This method allocates employee to the office they request."""
+        self.amity.add_person("Christina Sass", "Staff", "N")
+        self.amity.add_person("Jeremy Johnson", "Staff", "N")
+        self.amity.add_person("Shem Ogumbe", "Staff", "N")
+        self.amity.add_person("Maureen Nyakio", "Staff", "N")
+        self.amity.add_person("Mirabel Ekwenugo", "Staff", "N")
         self.amity.add_person("Catherine Mutava", "Staff", "N")
-        self.amity.add_person("Catherine Mutava", "Staff", "N")
-        self.amity.add_person("Catherine Mutava", "Staff", "N")
-        self.amity.add_person("Catherine Mutava", "Staff", "N")
-        self.amity.add_person("Catherine Mutava", "Staff", "N")
-        self.amity.add_person("Catherine Mutava", "Staff", "N")
+        self.amity.add_person("Angela Mutava", "Fellow", "N")
         self.amity.create_room(["Hogwarts"], "Office")
-        self.assertEqual(self.amity.allocate_employee("Angela Mutava", "Hogwarts"), "Room is full.Office cannot accomodate more than 6 employees.")
+        self.amity.allocate_employee("Christina Sass", "Hogwarts")
+        self.amity.allocate_employee("Jeremy Johnson", "Hogwarts")
+        self.amity.allocate_employee("Mirabel Ekwenugo", "Hogwarts")
+        self.amity.allocate_employee("Maureen Nyakio", "Hogwarts")
+        self.amity.allocate_employee("Shem  Ogumbe", "Hogwarts")
+        self.amity.allocate_employee("Angela Mutava", "Hogwarts")
+
+        self.assertEqual(self.amity.allocate_employee("Catherine Mutava", "Hogwarts"), "Room is full.Office cannot accomodate more than 6 employees.")
 
     def test_accomodate_fellow(self):
     	""" This method adds a fellow to the requested."""
@@ -48,14 +69,40 @@ class TestAmity(unittest.TestCase):
         self.amity.create_room(["Jade"], "Living Space")
     	self.assertEqual(self.amity.accomodate_fellow("Angela Mutava", "Jade"), "Fellow accomodated successfully.")
 
+    def test_accomodate_fellow_same_space(self):
+        """ This method adds a fellow to the requested."""
+        self.amity.add_person("Angela Mutava", "Fellow", "Y")
+        self.amity.create_room(["Jade"], "Living Space")
+        self.amity.accomodate_fellow("Angela Mutava", "Jade")
+        self.assertEqual(self.amity.accomodate_fellow("Angela Mutava", "Jade"), "Fellow already in the given space.")    
+
+    def test_accomodate_fellow_duplicates(self):
+        """ This method adds a fellow to the requested."""
+        self.amity.add_person("Angela Mutava", "Fellow", "Y")
+        self.amity.create_room(["Jade"], "Living Space")
+        self.amity.create_room(["Hamilton"], "Living Space")
+        self.amity.accomodate_fellow("Angela Mutava", "Jade")
+        self.assertEqual(self.amity.accomodate_fellow("Angela Mutava", "Hamilton"), "Fellow can only be accomodated in one room.")
+
+    def test_accomodate_fellow_unregistered(self):
+        """ This method adds a fellow to the requested."""
+        self.amity.add_person("Angela Mutava", "Fellow", "Y")
+        self.amity.create_room(["Jade"], "Living Space")
+        self.assertEqual(self.amity.accomodate_fellow("Valeria Chemtai", "Jade"), "Sorry employee not in our system.")
+
     def test_accomodate_fellow_more_than_4_in_living_space(self):
         """ This method adds a fellow to the requested."""
         self.amity.add_person("Angela Mutava", "Fellow", "Y")
-        self.amity.add_person("Angela Mutava", "Fellow", "Y")
-        self.amity.add_person("Angela Mutava", "Fellow", "Y")
-        self.amity.add_person("Angela Mutava", "Fellow", "Y")
+        self.amity.add_person("Rose Wambui", "Fellow", "Y")
+        self.amity.add_person("Valeria Chemtai", "Fellow", "Y")
+        self.amity.add_person("Joan Awinja", "Fellow", "Y")
+        self.amity.add_person("Caroline Wanjiku", "Fellow", "Y")
         self.amity.create_room(["Jade"], "Living Space")
-        self.assertEqual(self.amity.accomodate_fellow("Angela Mutava", "Jade"), "A maximum of 4 people in space.")     
+        self.amity.accomodate_fellow("Angela Mutava", "Jade")
+        self.amity.accomodate_fellow("Rose Wambui", "Jade")
+        self.amity.accomodate_fellow("Valeria Chemtai", "Jade")
+        self.amity.accomodate_fellow("Joan Awinja", "Jade")
+        self.assertEqual(self.amity.accomodate_fellow("Caroline Wanjiku", "Jade"), "A maximum of 4 people in space.")     
 
     def test_accomodate_staff(self):
         """ This method adds a fellow to the requested."""
@@ -70,7 +117,14 @@ class TestAmity(unittest.TestCase):
     	self.amity.allocate_employee("Angela Mutava", "Camelot")
         self.assertEqual(self.amity.reallocate_employee("Angela Mutava", "Krypton"), "Fellow reallocated successfully.")
 
-        def test_reallocate_staff(self):
+    def test_reallocate_fellow_unregistered(self):
+        """ This method reallocates one person from one room to another."""
+        self.amity.add_person("Angela Mutava", "Fellow", "Y")
+        self.amity.create_room(["Camelot", "Krypton"], "office")
+        self.amity.allocate_employee("Angela Mutava", "Camelot")
+        self.assertEqual(self.amity.reallocate_employee("Valeria Chemtai", "Krypton"), "Sorry the fellow is not added to the system.")
+
+    def test_reallocate_staff(self):
         """ This method reallocates one person from one room to another."""
         self.amity.add_person("Angela Mutava", "Staff", "N")
         self.amity.create_room(["Camelot", "Krypton"], "office")
@@ -97,9 +151,8 @@ class TestAmity(unittest.TestCase):
 
     def test_load_people(self, file_path):
         sample_file = "employees.txt"
-        sample_path = os.path.dirname(os.path.realpath(__file__))+"/" + sample_file
-        self.amity.load_people(file_path)
-        self.assertEqual(self.amity.load_people(file_path), sample_file)		    	    	
+        sample_path = os.path.dirname(os.path.realpath(__file__))+ "/" + sample_file
+        self.assertEqual(self.amity.load_people(file_path), sample_path)		    	    	
 
 
 
