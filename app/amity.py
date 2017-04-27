@@ -29,8 +29,11 @@ class Amity(object):
 	def print_rooms(self):
 		pass 
 
-	def load_people(self, file_path):
-		pass											
+	def load_people(self, database_name):
+		pass
+
+	def save_people(self, database_name):
+		pass												
   
 
          

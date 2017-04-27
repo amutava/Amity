@@ -8,30 +8,30 @@ class TestAmity(unittest.TestCase):
 
     def setUp(self):
         self.amity = Amity()
-        self.persons = []
-        self.rooms = []
         
 
     def test_add_person(self):
     	""" This method tests that a person can be added successfully to the system."""
-        self.persons.append(self.amity.add_person("Catherine Mutava", "Staff", "N"))
-        self.assertGreater(len(self.persons),
-                         0)
+        
+        self.assertEqual(self.amity.add_person("Catherine Mutava", "Staff", "N"), "Staff added successfully.")
+        
 
     def test_add_person_duplicate(self):
         """ This method tests that a person can be added successfully to the system."""
-        self.persons.append(self.amity.add_person("Catherine Mutava", "Staff", "N"))
-        self.assertIn("Catherine Mutava", self.persons,
+        self.amity.add_person("Catherine Mutava", "Staff", "N")
+        self.assertEqual(self.amity.add_person("Catherine Mutava", "Staff", "N"),
                          "Employee with the given name exists in the system.")
 
     def test_create_room(self):
     	""" This method creates rooms of the given type """
-    	self.assertEqual(self.amity.create_room(["Valhalla", "Camelot", "Krypton", "Accra", "Hogwarts"], "Office"), "Rooms created successfully.")
+        
+        self.assertEqual(self.amity.create_room(["Valhalla", "Camelot", "Krypton", "Accra", "Hogwarts"], "Office"), "Room created successfully.")
+        
     
     def test_create_room_duplicates(self):
         """ This method creates rooms of the given type """
         self.amity.create_room("Valhala", "Office")
-        self.assertEqual(self.amity.create_room(["Valhalla", "Camelot", "Krypton", "Accra", "Hogwarts"], "Office"), "Sorry system does not allow duplicate rooms.")
+        self.assertEqual(self.amity.create_room("Valhala", "Office"), "Sorry system does not allow duplicate rooms.")
 
 
     def test_allocate_employee(self):
@@ -147,15 +147,18 @@ class TestAmity(unittest.TestCase):
     	
 
     def test_print_allocated_rooms(self):
-    	"""This method prints the rooms that have  been allocated employees yet."""
+    	"""This method prints the rooms that have  been allocated employees."""
     	self.amity.create_room(["Hogwarts", "Camelot"], "Office")
     	self.amity.allocate_employee("Angela Mutava", "Camelot")
     	self.assertEqual(self.amity.print_unallocated_room(), "Camelot")
 
-    def test_load_people(self, file_path):
-        sample_file = "employees.txt"
-        sample_path = os.path.dirname(os.path.realpath(__file__))+ "/" + sample_file
-        self.assertEqual(self.amity.load_people(file_path), sample_path)		    	    	
+    def test_load_people(self):
+        """This method loads people from a database """
+        self.assertEqual(self.amity.load_people("people.db"), "Employees loaded from database successfully.")
+
+    def test_save_people(self):
+        """This method loads people from a .txt file to the database"""
+        self.assertEqual(self.amity.save_people("people.db"), "Employees loaded to database successfully.")  		    	    	
 
 
 
