@@ -7,18 +7,22 @@ class Amity(object):
 	def __init__(self):
 		self.employees = []
 		self.rooms = []
+		self.offices = []
+		self.living_spaces = []
 		self.allocated_employees = []
 		self.unallocated_employees = []
 		self.allocated_rooms = {}
 
 
-    def create_room(self):
-		num_rooms = input("How many rooms do you want to create?")
-		for rooms in int(num_rooms):
-			room_name = input("Enter room name")
-			self.rooms.append(room_name)
-		print("Rooms added successfully.")	
-		return self.rooms			
+    def create_room(self, room_name, room_type):
+		if room_type == "office":
+			office = Office(room_name)
+			self.offices.append(office)
+		elif room_type == "living_space":
+			living_space = LivingSpace(room_name)
+			self.living_spaces.append(living_space)
+		else:
+			return "Invalid room type."					
 
 
 	def add_person(self):
@@ -33,9 +37,14 @@ class Amity(object):
 			self.employees.append(staff)	
 
 
-	def allocate_employee(self):
+	def allocate_employee(self, person_name):
 		secure_random = random.SystemRandom()
 		random_room = secure_random.choice(self.rooms)
+		office = Office()
+		if len(self.allocated_rooms[random_room]) < office.room_capacity:
+			self.allocated_rooms[random_room].append(person_name)
+		else:
+		    return "Room is already full."	
 
 
 	def accomodate_fellow(self):

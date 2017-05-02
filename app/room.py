@@ -1,8 +1,8 @@
 import random
 class Room(object):
-	def __init__(self, room_name, room_type, room_capacity):
+	def __init__(self, room_name,  room_capacity ):
 		self.room_name = room_name
-		self.room_type = room_type
+		
 		self.room_capacity = room_capacity
 		self.room_occupants = []
 
@@ -14,8 +14,8 @@ class Room(object):
 					
 
 class Office(Room):
-	def __init__(self, room_name, room_type):
-		super(Office, self).__init__(room_name, room_type, 6)
+	def __init__(self, room_name):
+		super(Office, self).__init__(room_name,room_capacity = 6)
 
 	def allocate_office_space(self, person):
 			pass
@@ -28,8 +28,8 @@ class Office(Room):
    
 
 class LivingSpace(Room):
-    def __init__(self, room_name, room_type):
-		super(LivingSpace, self).__init__(room_name, room_type, 4)
+    def __init__(self, room_name):
+		super(LivingSpace, self).__init__(room_name, room_capacity = 4)
 
 	def allocate_living_space(self, person):
 		pass
