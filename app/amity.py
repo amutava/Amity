@@ -6,83 +6,100 @@ import random
 class Amity(object):
     def __init__(self):
         self.employees = []
-        self.rooms = []
+        self.offices = []
+        self.living_spaces =[]
         self.allocated_employees = []
         self.unallocated_employees = []
         self.allocated_rooms = {}
 
     def create_room(self, room_name, room_type):
+
         if room_type.lower() == "office":
-            office = Office(room_name)
-            self.rooms.append(office)
-            print("Office created successfully.")
+            if [office for office in self.offices if room_name == office.room_name ]:
+                print("{} is already created.".format(room_name))  
+                
+            else:
+                office = Office(room_name)
+                self.offices.append(office)
+                print("Office {} created successfully.".format(room_name))
+                  
         elif room_type.lower() == "living_space":
-            living_space = LivingSpace(room_name)
-            self.rooms.append(living_space)
-            print("Living space created successfully.")
+            if [living_space for living_space in self.living_spaces if room_name == living_space.room_name ]:
+                print("{} is already created.".format(room_name)) 
+            else:
+                living_space = LivingSpace(room_name)
+                self.living_spaces.append(living_space)
+                print("LivingSpace {} created successfully.".format(room_name))
         else:
             return "Invalid room type."
 
     def add_person(self, name, employee_type, need_accomodation="N"):
-        if employee_type.lower() == "fellow":
-            if need_accomodation.upper() == "Y":
-                fellow = Fellow(name, employee_type, need_accomodation)
-                self.employees.append(fellow)
-                print("Fellow added successfully.")
-                # accomodate fellow
-                fellow_space = self.accomodate_fellow()
-                if fellow_space != None:
-                    if len(fellow_space.room_occupants) < fellow_space.room_capacity:
-                        self.allocated_rooms[fellow_space.room_name] = fellow_space.room_occupants.append(name)
-                        print("Fellow accomodated successfully.")
-                    else:
-                        return "Room is full."
-            else:
-                fellow = Fellow(name, employee_type, need_accomodation)
-                self.employees.append(fellow)
-                fellow_space = self.accomodate_fellow()
-                if fellow_space != None:
-                    if len(fellow_space.room_occupants) < fellow_space.room_capacity:
-                        self.allocated_rooms[fellow_space.room_name] = fellow_space.room_occupants.append(name)
-                        print("Fellow allocated successfully.") 
-                    else:
-                        return "Room is full."
-        elif employee_type.lower() == "staff" :
-            staff = Staff(name, employee_type, need_accomodation)
-            self.employees.append(staff)
-            # allocate staff
-            staff_room = self.allocate_employee()
-            if staff_room != None:
-                if len(staff_room.room_occupants) < staff_room.room_capacity:
-                    self.allocated_rooms[staff_room.room_name] = room_occupants.append(name)
-                else:
-                    return "The office is already full."
-
+        if [employee for employee in self.employees if name == employee.name]:
+            print("{} already in the system".format(name))
         else:
-            return "Invalid employee type."
+            if employee_type.lower() == "fellow":
+                if need_accomodation.upper() == "Y":
+                    fellow = Fellow(name, employee_type, need_accomodation)
+                    self.employees.append(fellow)
+                
+                # accomodate fellow
+                    fellow_space = self.accomodate_fellow()
+                    if fellow_space != None:
+                        if len(fellow_space.room_occupants) < fellow_space.room_capacity:
+                            self.allocated_rooms[fellow_space.room_name] = fellow_space.room_occupants.append(name)
+                            print("{}  a {} accomodated successfully.".format(name, employee_type))
+                        else:
+                            print("Room is full.")
+                else:
+                    fellow = Fellow(name, employee_type, need_accomodation)
+                    self.employees.append(fellow)
+                    fellow_space = self.allocate_employee()
+                    if fellow_space != None:
+                        if len(fellow_space.room_occupants) < fellow_space.room_capacity:
+                            self.allocated_rooms[fellow_space.room_name] = fellow_space.room_occupants.append(name)
+                            print("{}  a {} allocated office space successfully.".format(name, employee_type)) 
+                        else:
+                            return "Room is full."
+            elif employee_type.lower() == "staff" :
+                staff = Staff(name, employee_type, need_accomodation)
+                self.employees.append(staff)
+                # allocate staff
+                staff_room = self.allocate_employee()
+                if staff_room != None:
+                    if len(staff_room.room_occupants) < staff_room.room_capacity:
+                        self.allocated_rooms[staff_room.room_name] = staff_room.room_occupants.append(name)
+                        print("{}  a {} allocated office space successfully.".format(name, employee_type))
+                    else:
+                        return "The office is already full."
+
+            else:
+                return "Invalid employee type."
 
     def allocate_employee(self):
-        if len(self.rooms) == 0:
-            print("No rooms available.")
+        if len(self.offices) == 0:
+            print("No office space available.")
         else:
             secure_random = random.SystemRandom()
-            random_room = secure_random.choice(self.rooms)
+            random_room = secure_random.choice(self.offices)
             return random_room
+               
             
 
     def accomodate_fellow(self):
-        if len(self.rooms) == 0:
-            print("No rooms available")
+        if len(self.living_spaces) == 0:
+            print("No living space available.")
         else:
             secure_random = random.SystemRandom()
-            random_room = secure_random.choice(self.rooms)
+            random_room = secure_random.choice(self.living_spaces)
             return random_room
+                
 
     def reallocate_employee(self):
         pass
 
     def print_room_occupants(self):
-        pass
+        for room, occupants in self.allocated_rooms.items():
+            print("{} has the following occupants {}".format(room, occupants))
 
     def print_allocated_rooms(self):
         pass
@@ -90,8 +107,7 @@ class Amity(object):
     def print_unallocated_room(self):
         pass
 
-    def print_rooms(self):
-        pass
+    
 
     def load_people(self):
         try:
@@ -116,7 +132,17 @@ class Amity(object):
         pass
 
 amity = Amity()
-amity.create_room("camelot", "office")
-amity.add_person("Angela Mutava", "fellow", "N")
+#amity.create_room("krypton", "living_space")
+amity.create_room("krypton", "Office")
 
-#print(amity.load_people())
+# amity.create_room("jade", "living_space")
+
+amity.add_person("Angela Mutava", "fellow", "N")
+# amity.add_person("Catherine Mutava", "fellow", "N")
+amity.add_person("Angela Mutava", "fellow", "N")
+# amity.add_person("Angela Mutava", "fellow", "N")
+# amity.add_person("Angela Mutava", "fellow", "N")
+# amity.add_person("Angela Mutava", "fellow", "N")
+# amity.add_person("Angela Mutava", "fellow", "N")
+# amity.print_room_occupants()
+# amity.load_people()
