@@ -1,5 +1,5 @@
 class Person(object):
-	def __init__(self, name, employee_type, need_accomodation= "N"):
+	def __init__(self, name, employee_type, need_accomodation = "N"):
 		self.name = name
 		self.employee_type = employee_type
 		self.need_accomodation = need_accomodation
