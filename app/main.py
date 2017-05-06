@@ -1,5 +1,22 @@
+
 """
-A brief description of what the application does.
+Usage:
+    amity create_room (living|office) <room_name>...
+    amity add_person <name> (fellow|staff) [<wants_accomodation>]
+    amity reallocate_person <name> <new_room_name>
+    amity load_people <filename>
+    amity save_people
+    amity print_allocated_rooms
+    amity print_unallocated_rooms
+    amity print_allocations [-o <filename>]
+    amity print_unallocated [-o <filename>]
+    amity print_room_occupants <room_name>
+    amity (-i | --interactive)
+    amity (-h | --help)
+Options:
+    -o, --output  Save to a txt file
+    -i, --interactive  Interactive Mode
+    -h, --help  Show this screen and exit.
 """
 import cmd
 from docopt import docopt, DocoptExit
@@ -32,9 +49,11 @@ def docopt_cmd(func):
 	fn.__dict__.update(func.__dict__)
 	return fn
 
+amity = Amity()	
+
 class Amity(cmd.Cmd):
 	intro = cprint(figlet_format("Amity", font="big"), "yellow", attrs=['bold'])
-	print ("**********User Guide************")
+	print ("    **********User Guide************    ")
 	print ("    Command    Description     Parameter")
 	
 	print ("type --help-- to view commands")
@@ -42,10 +61,11 @@ class Amity(cmd.Cmd):
 
 	@docopt_cmd
 	def do_create_room(self, arg):
-		"""Usage: create_room <room_name> <room_type>"""
-		room_name = arg["<room_name>"]
+		"""Usage: create_room <room_names> <room_type>"""
+		room_names = arg["<room_names>"]
 		room_type = arg["<room_type>"]
-		amity.create_room(room_name, room_type)
+		for rooms in room_names:
+			amity.create_room(rooms, room_type)
 
 	@docopt_cmd
 	def do_add_person(self, arg):

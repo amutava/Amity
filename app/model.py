@@ -15,7 +15,7 @@ class Employees(Base):
 
 	def __init__(self, employee_name, employee_type):
 		self.employee_name = employee_name
-		self.employee_type = empl
+		self.employee_type = employee
 
 # Create an engine that stores data in the local directory's
 # songs.db file.
