@@ -82,7 +82,8 @@ class TestAmity(TestCase):
         self.amity.create_room("Camelot", "office")
         self.amity.add_person('Angela Mutava', 'Staff', 'N')
         self.assertEqual(self.amity.reallocate_employee(
-            "Catherine Mutava", "Hogwarts"), "Employee with the given name is not registered.")
+            "Catherine Mutava", "Hogwarts"), "{} is not in the system.".format(
+                "Catherine Mutava"))
 
     def test_reallocate_employee_to_non_existing_room(self):
         """ This tests reallocation to a room that does not exist."""
@@ -96,12 +97,14 @@ class TestAmity(TestCase):
         self.amity.create_room("Camelot", "office")
         self.amity.add_person('Catherine Mutava', 'Staff', 'N')
         self.assertEqual(self.amity.reallocate_employee(
-            "Catherine Mutava", "Camelot"), "Employee cannot be reallocated to the same office.")
+            "Catherine Mutava", "Camelot"), "{} cannot be reallocated to the same office.".format(
+            "Catherine Mutava"))
 
         self.amity.create_room("Jade", "living_space")
         self.amity.add_person('Catherine Mutava', 'fellow', 'Y')
         self.assertEqual(self.amity.reallocate_employee(
-            "Catherine Mutava", "Jade"), "Employee cannot be reallocated to the same living space.")
+            "Catherine Mutava", "Jade"), "{} cannot be reallocated to the same living space.".format(
+            "Catherine Mutava"))
 
 
     # def test_allocate_employee(self):

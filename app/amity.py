@@ -106,7 +106,8 @@ class Amity(object):
         if self.check_employee:
             if self.check_office(new_room_name):
                 if self.check_old_employee_room(employee_name).room_name == new_room_name:
-                    return  "Employee cannot be reallocated to the same office."
+                    return  "{} cannot be reallocated to the same office.".format(
+                        employee_name)
                 else:
                     for offices in self.offices:
                         if new_room_name == offices.room_name:
@@ -120,7 +121,8 @@ class Amity(object):
                      
             elif self.check_living_space(new_room_name):
                 if self.check_old_employee_room(employee_name).room_name == new_room_name:
-                    return  "Employee cannot be reallocated to the same living space."
+                    return  "{} cannot be reallocated to the same living space.".format(
+                        employee_name)
                 else:
                     for spaces in self.living_spaces:
                         if new_room_name == spaces.room_name:
@@ -134,7 +136,8 @@ class Amity(object):
             else:
                 return "Amity has no room with the name {}".format(new_room_name)
         else:
-            return "Employee with the given name is not registered."
+            return "{} is not in the system.".format(
+                employee_name)
 
     def print_room_occupants(self):
         for room, occupants in self.allocated_rooms.items():
