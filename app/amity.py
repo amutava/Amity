@@ -178,9 +178,9 @@ class Amity(object):
                 
 
 
-    def load_people(self):
+    def load_people(self, filename):
         try:
-            employees = open("employee.txt", "r")
+            employees = open(filename, "r")
             for employee in employees.readlines():
                 name = employee.split()[0] + " " + employee.split()[1]
                 employee_type = employee.split()[2].lower()
@@ -191,9 +191,9 @@ class Amity(object):
                 self.add_person(name, employee_type, need_accomodation)
 
         except IOError:
-            print ("Error: can\'t find file or read data.")
+            return "Error: can\'t find file or read data."
         else:
-            print ("Read content from the file successfully.")
+            return "Read content from the file successfully."
 
     def save_people(self):
         pass
