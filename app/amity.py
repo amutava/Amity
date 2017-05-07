@@ -1,5 +1,5 @@
-from . person import Person, Fellow, Staff
-from . room import Room, Office, LivingSpace
+from  person import Person, Fellow, Staff
+from  room import Room, Office, LivingSpace
 import random
 
 
@@ -140,12 +140,10 @@ class Amity(object):
                 employee_name)
 
     def print_room_occupants(self):
-        for room, occupants in self.allocated_rooms.items():
-            print("{} has the following occupants {}".format(room, occupants))
+        pass
 
     def print_allocated_rooms(self):
-        for rooms in self.allocated_rooms.keys():
-            print (rooms)
+        pass
 
     def print_unallocated_room(self):
         pass
@@ -179,6 +177,7 @@ class Amity(object):
 
 
     def load_people(self, filename):
+        """This method loads people from a text file and adds them to the system."""
         try:
             employees = open(filename, "r")
             for employee in employees.readlines():
@@ -197,6 +196,12 @@ class Amity(object):
 
     def save_people(self):
         pass
+
+    def load_state(self):
+        pass
+
+    def save_state(self):
+        pass        
 
 amity = Amity()
 amity.create_room("Jade", "living_space")

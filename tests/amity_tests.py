@@ -63,18 +63,18 @@ class TestAmity(TestCase):
     def test_reallocation(self):
         """This test an employee reallocation to a new room"""
         self.amity.create_room("Camelot", "office")
-        self.amity.create_room("Krypton", "office")
         self.amity.add_person('Angela Mutava', 'Staff', 'N')
+        self.amity.create_room("Krypton", "office")
         self.assertEqual(self.amity.reallocate_employee(
-            "Angela Mutava", "Camelot"), "{} reallocated  to {}.".format(
-                                    "Angela Mutava", "Camelot"))
+            "Angela Mutava", "Krypton"), "{} reallocated  to {}.".format(
+                                    "Angela Mutava", "Krypton"))
 
         self.amity.create_room("Jade", "living_space")
-        self.amity.create_room("Hamilton", "living_space")
         self.amity.add_person('Angela Mutava', 'fellow', 'Y')
+        self.amity.create_room("Hamilton", "living_space")
         self.assertEqual(self.amity.reallocate_employee(
-            "Angela Mutava", "Hamilton"), "{} reallocated  to {}.".format(
-                                    "Angela Mutava", "Hamilton"))
+            "Angela Mutava", "Jade"), "{} reallocated  to {}.".format(
+                                    "Angela Mutava", "Jade"))
 
 
     def test_reallocate_employee_not_registered(self):
