@@ -106,39 +106,17 @@ class TestAmity(TestCase):
             "Catherine Mutava", "Jade"), "{} cannot be reallocated to the same living space.".format(
             "Catherine Mutava"))
 
-    # def test_print_rooms(self):
-    #     """ This method prints all the rooms."""
-    #     self.amity.create_room(["Valhalla", "Camelot", "Cairo"], "Office")
-    #     self.assertEqual(self.amity.print_rooms(),
-    #                      ("Valhalla", "Camelot", "Cairo"))
-
-    # def test_print_unallocated_rooms(self):
-    #     """This method prints the rooms that have not been allocated employees yet."""
-    #     self.amity.create_room(["Hogwarts", "Camelot"], "Office")
-    #     self.amity.allocate_employee("Angela Mutava", "Camelot")
-    #     self.assertEqual(self.amity.print_unallocated_room(), "Hogwarts")
-
-    # def test_print_allocated_rooms(self):
-    #     """This method prints the rooms that have  been allocated employees."""
-    #     self.amity.create_room(["Hogwarts", "Camelot"], "Office")
-    #     self.amity.allocate_employee("Angela Mutava", "Camelot")
-    #     self.assertEqual(self.amity.print_unallocated_room(), "Camelot")
-
     def test_load_people(self):
         """This method tests loading people from a textfile """
         self.assertEqual(self.amity.load_people("employee.txt"),
                          "Read content from the file successfully.")
 
-    def test_load_people_from_nonexisting_file(self):
+    def test_load_people_from_non_existing_file(self):
         """This method tests loading people form a file that doesn't exist."""
         self.assertEqual(self.amity.load_people("employees.txt"),
                          "Error: can\'t find file or read data.")    
 
-    # def test_save_people(self):
-    #     """This method loads people from a .txt file to the database"""
-    #     self.assertEqual(self.amity.save_people("people.db"),
-    #                      "Employees loaded to database successfully.")
-
+    
 
 if __name__ == '__main__':
     unittest.main()
