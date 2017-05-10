@@ -1,13 +1,9 @@
-from sqlachemy import create_engine
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
-
-engine = create_engine('sqlite:///amity_db')
-Session = sessionmaker(bind=engine)
-session = Session()
 Base = declarative_base()
-
 
 class Employees(Base):
     __tablename__ = 'employees'
@@ -27,11 +23,14 @@ class Offices(Base):
     office_id = Column(Integer, primary_key=True)
     room_name = Column(String(60))
     room_capacity = Column(String(20))
-    room_occupants = Column(String(600))  
+    room_occupants = Column(String(600))
 
+    def __init__(self, room_name, room_capacity, room_occupants):
+    	self.room_name = room_name
+    	self.room_capacity = room_capacity
+    	self.room_occupants = room_occupants
 
-    def __repr__(self):
-        return 'Office %s' % (self.name)
+    
 
 
 class LivingSpaces(Base):
@@ -41,8 +40,13 @@ class LivingSpaces(Base):
     room_capacity = Column(String(20))
     room_occupants = Column(String(600))
 
-    def __repr__(self):
-        return 'Livingspace %s' % (self.name)
+    def __init__(self, room_name, room_capacity, room_occupants):
+    	self.room_name = room_name
+    	self.room_capacity = room_capacity
+    	self.room_occupants = room_occupants
+
+   
 
 
-Base.metadata.create_all(engine)
+
+

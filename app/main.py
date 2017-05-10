@@ -2,7 +2,7 @@
 """
 Usage:
     amity create_room (living|office) <room_name>...
-    amity add_person <name> (fellow|staff) [<wants_accomodation>]
+    amity add_person <firstname> <lastname> (fellow|staff) [--need_accomodation=(Y | N)]
     amity reallocate_person <name> <new_room_name>
     amity load_people <filename>
     amity save_people
@@ -100,11 +100,16 @@ class Amity(cmd.Cmd):
 
     @docopt_cmd
     def do_add_person(self, arg):
-        """Usage: add_person [<name>] [<employee_type>] [<need_accomodation>]"""
-        name = arg["<name>"]
+        """Usage: add_person [<firstname>] [<lastname>] [<employee_type>] [--need_accomodation=<opt>]"""
+        firstname = arg["<firstname>"]
+        lastname = arg["<lastname>"]
+        name = firstname +" "+lastname
         employee_type = arg["<employee_type>"]
-        need_accomodation = arg["need_accomodation"]
-        add_employee = amity.add_person(name, employee_type, need_accomodation)
+        need_accomodation = arg["--need_accomodation"]
+        if need_accomodation == None:
+            need_accomodation = "N"
+        else:
+            print(add_employee = amity.add_person(name, employee_type, need_accomodation))
 
     @docopt_cmd
     def do_reallocate_employee(self, arg):
@@ -114,7 +119,7 @@ class Amity(cmd.Cmd):
         reallocate = amity.reallocate_employee(name, new_room_name)
 
     @docopt_cmd
-    def do_print_room(self):
+    def do_print_room(self, arg):
         """Usage: print_room [<room_name>]"""
         room_name = arg["<room_name>"]
         amity.print_room(room_name)
