@@ -1,22 +1,24 @@
 
 """
 Usage:
-    amity create_room (living|office) <room_name>...
-    amity add_person <firstname> <lastname> (fellow|staff) [--need_accomodation=(Y | N)]
-    amity reallocate_person <name> <new_room_name>
-    amity load_people <filename>
-    amity save_people
-    amity print_allocated_rooms
-    amity print_unallocated_rooms
-    amity print_allocations [-o <filename>]
-    amity print_unallocated [-o <filename>]
-    amity print_room_occupants <room_name>
+     create_room  <room_name> <room_type>
+     add_person <first_name> <last_name>  <employee_type> [<need_accomodation>]
+     reallocate_employee <first_name> <last_name> <new_room_name>
+     load_people <filename>
+     save_people
+     load_state<dbname>
+     save_state<dbname>
+     print_allocated_rooms
+     print_unallocated_rooms
+     print_allocations [-o=<filename>]
+     print_unallocated [-o <filename>]
+     print_room <room_name>
     amity (-i | --interactive)
     amity (-h | --help)
 Options:
-    -o, --output  Save to a txt file
     -i, --interactive  Interactive Mode
     -h, --help  Show this screen and exit.
+     
 """
 import cmd
 from docopt import docopt, DocoptExit
@@ -87,61 +89,80 @@ class Amity(cmd.Cmd):
 
     @docopt_cmd
     def do_create_room(self, arg):
-        """Usage: create_room [<room_names>] [<room_type>]"""
-        room_names = arg["<room_names>"]
+        """Usage: create_room <room_name> <room_type>"""
+        room_name = arg["<room_name>"]
         room_type = arg["<room_type>"]
-        if type(room_names) == list:
-            for names in room_names:
-                create_rooms = amity.create_room(names, room_type)
-                print(create_rooms)
-        else:
-            create_rooms = amity.create_room(room_names, room_type)
-            print(create_rooms)
+        print(amity.create_room(room_name, room_type))
 
     @docopt_cmd
     def do_add_person(self, arg):
-        """Usage: add_person [<firstname>] [<lastname>] [<employee_type>] [--need_accomodation=<opt>]"""
-        firstname = arg["<firstname>"]
-        lastname = arg["<lastname>"]
-        name = firstname +" "+lastname
+        """Usage: add_person <first_name> <last_name> <employee_type> [<need_accomodation>]"""
+        first_name = arg["<first_name>"]
+        last_name = arg["<last_name>"]
+        name = first_name + " " + last_name
         employee_type = arg["<employee_type>"]
-        need_accomodation = arg["--need_accomodation"]
+        need_accomodation = arg["<need_accomodation>"]
         if need_accomodation == None:
             need_accomodation = "N"
         else:
-            print(add_employee = amity.add_person(name, employee_type, need_accomodation))
+            print(amity.add_person(name, employee_type, need_accomodation))
 
     @docopt_cmd
     def do_reallocate_employee(self, arg):
-        """Usage: reallocate_employee [<name>] [<new_room_name>]"""
-        name = arg["<name>"]
+        """Usage: reallocate_employee <first_name> <last_name> <new_room_name>"""
+        first_name = arg["<first_name>"]
+        last_name = arg["<last_name>"]
+        name = first_name + " " + last_name
         new_room_name = arg["<new_room_name>"]
-        reallocate = amity.reallocate_employee(name, new_room_name)
+        print(amity.reallocate_employee(name, new_room_name))
 
     @docopt_cmd
     def do_print_room(self, arg):
         """Usage: print_room [<room_name>]"""
         room_name = arg["<room_name>"]
-        amity.print_room(room_name)
+        print(amity.print_room(room_name))
 
     @docopt_cmd
-    def do_print_allocations(self):
-        """Usage: print_allocations [-o <filename>]"""
+    def do_print_allocations(self, arg):
+        """
+        Usage: print_allocations [--o=<filename>]
+
+        """
+        filename = arg["--o"]
+        amity.print_allocations(filename)
 
     @docopt_cmd
-    def do_print_unallocated(self):
-        """Usage: print_unallocated [-o <filename>]"""
+    def do_print_unallocated(self, arg):
+        """Usage: print_unallocated [--o=<filename>]
+
+        """
+        filename = arg["--o"]
+        amity.print_unallocated(filename)
 
     @docopt_cmd
-    def do_load_state(self):
-        """Usage:  load_state <db_name>"""
-        db_name = arg['<db_name>']
+    def do_load_state(self, arg):
+        """
+        Usage: load_state <dbname>
+
+       """
+
+        db_name = arg['<dbname>']
         amity.load_state(db_name)
 
     @docopt_cmd
+    def do_load_people(self, arg):
+        """ Usage: load_people <filename>"""
+        filename = arg["<filename>"]
+        amity.load_people(filename)    
+
+    @docopt_cmd
     def do_save_state(self, arg):
-        """Usage: save_state [--db_name=amity_db]"""
-        db_name = arg['--db_name']
+        """
+        Usage: save_state <dbname>
+
+    
+        """
+        db_name = arg['<dbname>']
         amity.save_state(db_name)
 
     def do_quit(self, arg):

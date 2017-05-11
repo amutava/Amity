@@ -4,10 +4,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
 
-
-from person import Fellow, Staff
-from room import Office, LivingSpace
-from model import Base, Employees, Offices, LivingSpaces
+from  person import Fellow, Staff
+from  room import Office, LivingSpace
+from  model import Base, Employees, Offices, LivingSpaces
 
 engine = create_engine('sqlite:///amity_db')
 Session = sessionmaker(bind=engine)
@@ -52,7 +51,7 @@ class Amity(object):
         else:
             return "Invalid room type."
 
-    def add_person(self, name, employee_type, need_accomodation="N"):
+    def add_person(self, name, employee_type, need_accomodation= "N"):
         if name in [employee.name for employee in self.employees]:
             return "{} already in the system".format(name)
         else:
@@ -118,7 +117,9 @@ class Amity(object):
                 return random_room
 
     def reallocate_employee(self, employee_name, new_room_name):
-        if self.check_employee:
+        #import ipdb
+        #ipdb.set_trace()
+        if self.check_employee(employee_name):
             if self.check_office(new_room_name):
                 if self.check_old_employee_room(
                         employee_name).room_name == new_room_name:
@@ -133,7 +134,7 @@ class Amity(object):
                                     employee_name).room_occupants.\
                                     remove(employee_name)
                                 offices.room_occupants.append(employee_name)
-                                return "{} reallocated  to {}.".format(
+                                return "{} reallocated to {}.".format(
                                     employee_name, new_room_name)
                             else:
                                 return "{} if full.".format(new_room_name)
@@ -165,29 +166,31 @@ class Amity(object):
     def print_room(self, room_name):
         """This methods the people in the room name passed."""
         for rooms in self.offices + self.living_spaces:
-            if room_name == rooms.room_name:
+            if rooms.room_name == room_name:
                 print("---------occupants----------")
                 for occupants in rooms.room_occupants:
                     print(occupants)
 
-    def print_allocations(self, args):
+    def print_allocations(self, filename):
         people = ""
-        for rooms in self.LivingSpaces + self.offices:
+
+        for rooms in self.living_spaces + self.offices:
+            people += rooms.room_name +"\n"
+            people += '-' * 20 + '\n'
             if len(rooms.room_occupants) > 0:
-                for occupants in rooms.room_occupants:
-                    people += "\n".join(map(rooms.room_name, occupants))
+                people += "\n".join(rooms.room_occupants)
 
             else:
                 return "{} is empty.".format(rooms.room_name)
 
-        if args["-o"]:
-            with open(args["<filename>"], "wt") as output_file:
+        if filename:
+            with open(filename, "w") as output_file:
                 output_file.write(people)
                 print ("Allocations has been saved to {}".format(
-                    args["<filename>"]))
+                    filename))
         return people
 
-    def print_unallocated(self, args):
+    def print_unallocated(self, filename):
         employees = ""
         if len(self.unallocated_employees) == 0:
             for employees in self.unallocated_employees:
@@ -196,11 +199,11 @@ class Amity(object):
         else:
             return "All the employees are allocated rooms"
 
-        if args["-o"]:
-            with open(args["<filename>"], "wt") as output_file:
+        if filename:
+            with open(filename, "w") as output_file:
                 output_file.write(employees)
                 print ("Allocations has been saved to {}".format(
-                    args["<filename>"]))
+                    filename))
         return employees
 
     def check_office(self, room_name):
@@ -220,7 +223,7 @@ class Amity(object):
          from a list of all employees."""
         for employee in self.employees:
             if employee.name == employee_name:
-                return True
+                return employee
 
     def check_old_employee_room(self, employee_name):
         """A helper method to check the room an \
@@ -300,6 +303,26 @@ class Amity(object):
         except NoResultFound:
             print("The employees table is empty.")
 
+    def load_people(self, filename):
+        """This method loads people from a \
+        text file and adds them to the system."""
+        try:
+            employees = open(filename, "r")
+            for employee in employees.readlines():
+                name = employee.split()[0] + " " + employee.split()[1]
+                employee_type = employee.split()[2].lower()
+                if len(employee.split()) == 4:
+                    need_accomodation = employee.split()[3].upper()
+                else:
+                    need_accomodation = "N"
+                self.add_person(name, employee_type, need_accomodation)
+                print("added employees")        
+
+        except IOError:
+            return "Error: can\'t find file or read data."
+        else:
+            return "Read content from the file successfully."        
+
     def save_state(self, db_name):
         """This methods saves the people in the app to a database"""
 
@@ -312,7 +335,8 @@ class Amity(object):
                     session.add(employee)
                     session.commit()
                     print("Employees added to database successfully.")
-                except:
+                except Exception as e:
+                    print("-------Error-------: {}".format(e))
                     session.rollback()
         else:
             print("Amity has no employees.")
@@ -353,12 +377,3 @@ class Amity(object):
         for employees in self.employees:
             return employees
 
-amity = Amity()
-
-# print(amity.create_room("krypton", "Office"))
-# print(amity.create_room("krypton", "living_space"))
-# print(amity.add_person("catherine Mutava", "staff", "N"))
-# print(amity.save_state("amity.db"))
-#print(amity.print_allocations(""))
-#print(amity.print_unallocated(""))
-#print(amity.load_state("amity.db"))
