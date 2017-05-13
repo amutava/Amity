@@ -4,9 +4,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
 
-from  person import Fellow, Staff
-from  room import Office, LivingSpace
-from  model import Base, Employees, Offices, LivingSpaces
+from person import Fellow, Staff
+from room import Office, LivingSpace
+from model import Base, Employees, Offices, LivingSpaces
 
 engine = create_engine('sqlite:///amity_db')
 Session = sessionmaker(bind=engine)
@@ -15,7 +15,6 @@ Base.metadata.create_all(engine)
 
 
 class Amity(object):
-    employee = []
 
     def __init__(self):
         self.employees = []
@@ -27,7 +26,7 @@ class Amity(object):
         self.unaccomodated_fellows = []
 
     def create_room(self, room_name, room_type):
-
+        """This method creates an office or living space."""
         if room_type.lower() == "office":
             if [office
                 for office in self.offices
@@ -35,7 +34,7 @@ class Amity(object):
                 return "{} is already created.".format(room_name)
 
             else:
-                office = Office(room_name)
+                office = Office(room_name, room_type)
                 self.offices.append(office)
                 return "Office {} created successfully.".format(room_name)
 
@@ -45,13 +44,15 @@ class Amity(object):
                     if room_name == living_space.room_name]:
                 return "{} is already created.".format(room_name)
             else:
-                living_space = LivingSpace(room_name)
+                living_space = LivingSpace(room_name, room_type)
                 self.living_spaces.append(living_space)
                 return "LivingSpace {} created successfully.".format(room_name)
         else:
             return "Invalid room type."
 
-    def add_person(self, name, employee_type, need_accomodation= "N"):
+    def add_person(self, name, employee_type, need_accomodation="N"):
+        """This method adds a person to the system \
+        and adds them to a random room."""
         if name in [employee.name for employee in self.employees]:
             return "{} already in the system".format(name)
         else:
@@ -63,7 +64,7 @@ class Amity(object):
                     fellow_space = self.accomodate_fellow()
                     if fellow_space:
                         fellow_space.room_occupants.append(name)
-                        return "{}  a {} accomodated in living space.".format(
+                        return "{}  a {} accomodated successfully".format(
                             name, employee_type)
                         self.allocated_rooms.append(fellow_space)
                     else:
@@ -75,7 +76,7 @@ class Amity(object):
                     fellow_office = self.allocate_employee()
                     if fellow_office:
                         fellow_office.room_occupants.append(name)
-                        return "{}  a {} added in the office space.".format(
+                        return "{}  a {} added successfully".format(
                             name, employee_type)
                     else:
                         self.unallocated_employees.append(name)
@@ -99,8 +100,9 @@ class Amity(object):
                 return "Invalid employee type."
 
     def allocate_employee(self):
+        """This method returns a random office object."""
         if len(self.offices) == 0:
-            print("No office space available.")
+            return "No office space available."
         else:
             secure_random = random.SystemRandom()
             random_room = secure_random.choice(self.offices)
@@ -108,8 +110,10 @@ class Amity(object):
                 return random_room
 
     def accomodate_fellow(self):
-        if len(self.living_spaces) == 0:
-            print("No living space available.")
+        """This method returns a random \
+        livingspace object"""
+        if self.living_spaces == 0:
+            return "No living space available."
         else:
             secure_random = random.SystemRandom()
             random_room = secure_random.choice(self.living_spaces)
@@ -117,48 +121,55 @@ class Amity(object):
                 return random_room
 
     def reallocate_employee(self, employee_name, new_room_name):
-        #import ipdb
-        #ipdb.set_trace()
+        """This method reallocates an employee from one \
+        livingspace or room to another."""
         if self.check_employee(employee_name):
             if self.check_office(new_room_name):
                 if self.check_old_employee_room(
                         employee_name).room_name == new_room_name:
-                    return "{} cannot be reallocated to the same office.".\
-                        format(
-                            employee_name)
+                    return "{} cannot be reallocated to the same office.".format(
+                        employee_name)
                 else:
-                    for offices in self.offices:
-                        if new_room_name == offices.room_name:
-                            if len(offices.room_occupants) < 6:
+                    if self.check_office(new_room_name):
+                        if self.check_office(new_room_name).room_type == self.check_old_employee_room(employee_name).room_type:
+                            if len(self.check_office(new_room_name).room_occupants) < 6:
                                 self.check_old_employee_room(
-                                    employee_name).room_occupants.\
-                                    remove(employee_name)
-                                offices.room_occupants.append(employee_name)
+                                    employee_name).room_occupants.remove(employee_name)
+                                self.check_office(
+                                    new_room_name).room_occupants.append(employee_name)
                                 return "{} reallocated to {}.".format(
                                     employee_name, new_room_name)
                             else:
                                 return "{} if full.".format(new_room_name)
+                        else:
+                            return "{} cannot be reallocated\
+                            to different room type.".format(employee_name)
+                    else:
+                        return "{} is not an office in amity".format(new_room_name)
 
             elif self.check_living_space(new_room_name):
                 if self.check_old_employee_room(employee_name).\
                         room_name == new_room_name:
-                    return "{} cannot be reallocated to the same living space.".\
-                        format(employee_name)
+                    return "{} cannot be reallocated to the same living space.".format(employee_name)
                 else:
-                    for spaces in self.living_spaces:
-                        if new_room_name == spaces.room_name:
-                            if len(spaces.room_occupants) < 4:
+                    if self.check_living_space(new_room_name):
+                        if self.check_living_space(new_room_name).room_type == self.check_old_employee_room(employee_name).room_type:
+                            if len(self.check_living_space(new_room_name).room_occupants) < 4:
                                 self.check_old_employee_room(
                                     employee_name).room_occupants.\
                                     remove(employee_name)
-                                spaces.room_occupants.append(employee_name)
+                                self.check_living_space(
+                                    new_room_name).room_occupants.append(employee_name)
                                 return "{} reallocated to {}.".format(
                                     employee_name, new_room_name)
                             else:
                                 return "{} if full.".format(new_room_name)
+                        else:
+                            return "{} cannot be reallocated to different room type.".format(employee_name)
+                    else:
+                        return "{} is not a living space in amity".format(new_room_name)
             else:
-                return "Amity has no room with the name {}".\
-                    format(new_room_name)
+                return "Amity has no room with the name {}".format(new_room_name)
         else:
             return "{} is not in the system.".format(
                 employee_name)
@@ -170,53 +181,56 @@ class Amity(object):
                 print("---------occupants----------")
                 for occupants in rooms.room_occupants:
                     print(occupants)
+                return "Printed all occupants on screen."
 
     def print_allocations(self, filename):
+        """This method prints the employees that \
+        have been allocated to a textfile"""
         people = ""
 
         for rooms in self.living_spaces + self.offices:
-            people += rooms.room_name +"\n"
+            people += rooms.room_name 
             people += '-' * 20 + '\n'
             if len(rooms.room_occupants) > 0:
                 people += "\n".join(rooms.room_occupants)
-
+                print(people)
             else:
                 return "{} is empty.".format(rooms.room_name)
 
         if filename:
             with open(filename, "w") as output_file:
                 output_file.write(people)
-                print ("Allocations has been saved to {}".format(
-                    filename))
+                return "Allocations has been saved to {}".format(
+                    filename)
         return people
 
     def print_unallocated(self, filename):
+        """This method prints the unallocated employees to a textfile."""
         employees = ""
-        if len(self.unallocated_employees) == 0:
-            for employees in self.unallocated_employees:
-                employees += "\n".join(employees)
-
+        if self.unallocated_employees + self.unaccomodated_fellows:
+            employees += "\n".join(self.unallocated_employees + self.unaccomodated_fellows)
+            print(employees)
         else:
-            return "All the employees are allocated rooms"
+            return "Our waiting list is empty."
 
         if filename:
             with open(filename, "w") as output_file:
                 output_file.write(employees)
-                print ("Allocations has been saved to {}".format(
-                    filename))
+                return "Allocations has been saved to {}".format(
+                    filename)
         return employees
 
     def check_office(self, room_name):
         """A helper method to check a room_name is an office."""
         for office in self.offices:
             if room_name == office.room_name:
-                return True
+                return office
 
     def check_living_space(self, room_name):
         """A helper method to check a room_name is a living space."""
         for space in self.living_spaces:
             if room_name == space.room_name:
-                return True
+                return space
 
     def check_employee(self, employee_name):
         """A helper method to check an employee
@@ -234,7 +248,7 @@ class Amity(object):
                 return rooms
 
     def load_state(self, db_name=None):
-        # gets the employees from the employee table
+        """This method loads employees from the database to the application."""
         try:
             get_employee = session.query(Employees).one()
             name = get_employee.employee_name
@@ -242,7 +256,7 @@ class Amity(object):
             need_accomodation = get_employee.need_accomodation
             fellow = Fellow(name, employee_type, need_accomodation)
             self.employees.append(fellow)
-            print("Employee data obtained successfully.")
+            return "Employee data obtained successfully."
         except MultipleResultsFound:
             get_employees = session.query(Employees).all()
             for employee in get_employees:
@@ -251,57 +265,53 @@ class Amity(object):
                 need_accomodation = employee.need_accomodation
                 fellow = Fellow(name, employee_type, need_accomodation)
                 self.employees.append(fellow)
-            print("All employee data obtained successfully.")
+            return "All employee data obtained successfully."
 
         except NoResultFound:
-            print("The employees table is empty.")
+            return "The employees table is empty."
 
         # gets the offices from the office table
         try:
             get_office = session.query(Offices).one()
             room_name = get_office.room_name
-            room_capacity = get_office.room_capacity
             room_occupants = get_office.room_occupants.split(',')
             office = Office(room_name)
             self.offices.append(office)
             get_office.room_occupants = room_occupants
-            print("Office data obtained successfully.")
+            return "Office data obtained successfully."
         except MultipleResultsFound:
             get_offices = session.query(Offices).all()
             for offices in get_offices:
                 room_name = offices.room_name
-                room_capacity = offices.room_capacity
                 room_occupants = offices.room_occupants.split(',')
                 office = Office(room_name)
                 self.offices.append(office)
                 office.room_occupants = room_occupants
-            print("All office data obtained successfully.")
+            return "All office data obtained successfully."
 
         except NoResultFound:
-            print("The employees table is empty.")
+            return "The employees table is empty."
 
         # gets livingspaces from the living_spaces table living_spaces
         try:
             get_living_spaces = session.query(Employees).one()
             room_name = get_office.room_name
-            room_capicity = get_office.room_capacity
             room_occupants = get_office.room_occupants.split(',')
             space = LivingSpace(room_name)
             self.living_spaces.append(space)
-            print("Livingspace data obtained successfully.")
+            return "Livingspace data obtained successfully."
         except MultipleResultsFound:
             get_living_spaces = session.query(LivingSpaces).all()
             for spaces in get_living_spaces:
                 room_name = spaces.room_name
-                room_capacity = spaces.room_capacity
                 room_occupants = spaces.room_occupants.split(',')
                 space = LivingSpace(room_name)
                 self.living_spaces.append(space)
                 spaces.room_occupants = room_occupants
-            print("All livingspace data obtained successfully.")
+            return "All livingspace data obtained successfully."
 
         except NoResultFound:
-            print("The employees table is empty.")
+            return "The employees table is empty."
 
     def load_people(self, filename):
         """This method loads people from a \
@@ -316,17 +326,17 @@ class Amity(object):
                 else:
                     need_accomodation = "N"
                 self.add_person(name, employee_type, need_accomodation)
-                print("added employees")        
+            print("All employees loaded successfully from  textfile.")
 
         except IOError:
             return "Error: can\'t find file or read data."
         else:
-            return "Read content from the file successfully."        
+            return "Read content from the file successfully."
 
     def save_state(self, db_name):
         """This methods saves the people in the app to a database"""
 
-        if len(self.employees) > 0:
+        if self.employees:
             for employees in self.employees:
                 employee = Employees(
                     employees.name, employees.employee_type,
@@ -334,14 +344,14 @@ class Amity(object):
                 try:
                     session.add(employee)
                     session.commit()
-                    print("Employees added to database successfully.")
+                    return "Employees added to database successfully."
                 except Exception as e:
                     print("-------Error-------: {}".format(e))
                     session.rollback()
         else:
-            print("Amity has no employees.")
+            return "Amity has no employees."
 
-        if len(self.offices) > 0:
+        if self.offices:
             for rooms in self.offices:
                 office_occupants = ','.join(rooms.room_occupants)
                 office = Offices(
@@ -349,14 +359,14 @@ class Amity(object):
                 try:
                     session.add(office)
                     session.commit()
-                    print("Offices added to database successfully.")
+                    return "Offices added to database successfully."
                 except Exception as e:
                     print("-------Error-------: {}".format(e))
                     session.rollback()
         else:
-            print("Amity has no offices.")
+            return "Amity has no offices."
 
-        if len(self.living_spaces) > 0:
+        if self.living_spaces:
             for spaces in self.living_spaces:
                 space_occupants = ','.join(spaces.room_occupants)
                 spaces = LivingSpaces(spaces.
@@ -365,15 +375,14 @@ class Amity(object):
                 try:
                     session.add(spaces)
                     session.commit()
-                    print("LivingSpaces added to database successfully.")
+                    return "LivingSpaces added to database successfully."
                 except Exception as e:
                     print("-------Error-------: {}".format(e))
                     session.rollback()
         else:
-            print("Amity has no living spaces.")
+            return "Amity has no living spaces."
 
     def get_employees(self):
         """This methods returns all employee objects."""
         for employees in self.employees:
             return employees
-

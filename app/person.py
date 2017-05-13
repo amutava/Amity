@@ -9,7 +9,7 @@ class Person(object):
 class Fellow(Person):
     def __init__(self, name, employee_type, accomodation):
         super(Fellow, self).__init__(
-            name, employee_type, need_accomodation="N")
+            name, employee_type="fellow", need_accomodation="N")
 
 
 class Staff(Person):

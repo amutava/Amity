@@ -1,9 +1,8 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
+
 
 class Employees(Base):
     __tablename__ = 'employees'
@@ -26,11 +25,9 @@ class Offices(Base):
     room_occupants = Column(String(600))
 
     def __init__(self, room_name, room_capacity, room_occupants):
-    	self.room_name = room_name
-    	self.room_capacity = room_capacity
-    	self.room_occupants = room_occupants
-
-    
+        self.room_name = room_name
+        self.room_capacity = room_capacity
+        self.room_occupants = room_occupants
 
 
 class LivingSpaces(Base):
@@ -41,12 +38,6 @@ class LivingSpaces(Base):
     room_occupants = Column(String(600))
 
     def __init__(self, room_name, room_capacity, room_occupants):
-    	self.room_name = room_name
-    	self.room_capacity = room_capacity
-    	self.room_occupants = room_occupants
-
-   
-
-
-
-
+        self.room_name = room_name
+        self.room_capacity = room_capacity
+        self.room_occupants = room_occupants
