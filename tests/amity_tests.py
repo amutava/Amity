@@ -190,6 +190,43 @@ class TestAmity(TestCase):
         self.assertEqual(self.amity.save_state("amity.db"),
                          "Employees added to database successfully.")
 
+    def test_check_office(self):
+        """Tests whether the object returned is office."""
+        office = Office("accra", "office")
+        self.amity.offices.append(office)
+        self.assertEqual(self.amity.check_office("accra"), office)
+
+    def test_check_employee(self):
+        """Tests whether the object returned is office."""
+        fellow = Fellow("Angela Mutava", "fellow", "N")
+        self.amity.employees.append(fellow)
+        self.assertEqual(self.amity.check_employee("Angela Mutava"), fellow)    
+
+    def test_check_living_space(self):
+        """Tests whether object returned is living space"""      
+        space = LivingSpace("Jade", "living_space")
+        self.amity.living_spaces.append(space)
+        self.assertEqual(self.amity.check_living_space("Jade"), space)
+
+    def test_check_old_employee_room(self):
+        """Tests the previous employee room."""
+        office = Office("accra", "office")
+        self.amity.offices.append(office)
+        self.amity.add_person("Angela Mutava", "fellow", "N")
+        self.assertEqual(self.amity.check_old_employee_room("Angela Mutava"), office)
+
+    def test_allocate_employee(self):
+        """Tests random office returned"""
+        office = Office("accra", "office")
+        self.amity.offices.append(office)
+        self.assertEqual(self.amity.allocate_employee(), office) 
+
+    def test_accomodate_fellow(self):
+        """Tests random living space returned"""
+        space = LivingSpace("Jade", "living_space")
+        self.amity.living_spaces.append(space)
+        self.assertEqual(self.amity.accomodate_fellow(), space) 
+
     def tearDown(self):
         """To free variables for fresh use in other tests."""
         self.amity.employees = []
