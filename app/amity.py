@@ -4,14 +4,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
 
-from person import Fellow, Staff
-from room import Office, LivingSpace
-from model import Base, Employees, Offices, LivingSpaces
-
-engine = create_engine('sqlite:///amity_db')
-Session = sessionmaker(bind=engine)
-session = Session()
-Base.metadata.create_all(engine)
+from  person import Fellow, Staff
+from  room import Office, LivingSpace
+from  model import Base, Employees, Offices, LivingSpaces
 
 
 class Amity(object):
@@ -57,45 +52,56 @@ class Amity(object):
             return "{} already in the system".format(name)
         else:
             if employee_type.lower() == "fellow":
-                fellow_office = self.allocate_employee()
+                
                 if need_accomodation.upper() == "Y":
-                    fellow = Fellow(name, employee_type, need_accomodation)
-                    self.employees.append(fellow)
-                    fellow_space = self.accomodate_fellow()
-                    if fellow_space:
-                        fellow_space.room_occupants.append(name)
-                        return "{}  a {} accomodated successfully".format(
-                            name, employee_type)
-                        self.allocated_rooms.append(fellow_space)
-                    else:
-                        self.unaccomodated_fellows.append(name)
-                        return "Room is full."
-                else:
-                    fellow = Fellow(name, employee_type, need_accomodation)
-                    self.employees.append(fellow)
-                    fellow_office = self.allocate_employee()
-                    if fellow_office:
-                        fellow_office.room_occupants.append(name)
-                        return "{}  a {} added successfully".format(
-                            name, employee_type)
-                    else:
+                    try:
+                        fellow_space = self.accomodate_fellow()
+                        fellow = Fellow(name, employee_type, need_accomodation)
+                        self.employees.append(fellow)
+                        if fellow_space:
+                            fellow_space.room_occupants.append(name)
+                            return "{}  a {} accomodated successfully".format(
+                                name, employee_type)
+                            self.allocated_rooms.append(fellow_space)
+                        else:
+                            self.unaccomodated_fellows.append(name)
+                            return "Room is full."
+                    except:
                         self.unallocated_employees.append(name)
-                        return "Room is full."
+                        print("No living space available at the moment.")        
+                else:
+                    try:
+                        fellow_office = self.allocate_employee()
+                        fellow = Fellow(name, employee_type, need_accomodation)
+                        self.employees.append(fellow)
+                        if fellow_office:
+                            fellow_office.room_occupants.append(name)
+                            return "{}  a {} added successfully".format(
+                                name, employee_type)
+                        else:
+                            self.unallocated_employees.append(name)
+                            return "Room is full."
+                    except:
+                        self.unallocated_employees.append(name)
+                        print("No office space available at the moment")    
             elif employee_type.lower() == "staff":
                 if need_accomodation.upper() == "Y":
                     return "Sorry only fellows can be accomodated."
                 else:
-                    staff = Staff(name, employee_type, need_accomodation)
-                    self.employees.append(staff)
-                    staff_room = self.allocate_employee()
-                    if staff_room:
-                        staff_room.room_occupants.append(name)
-                        return "{} a {} added successfully.".format(
-                            name, employee_type)
-                    else:
+                    try:
+                        staff_room = self.allocate_employee()
+                        staff = Staff(name, employee_type, need_accomodation)
+                        self.employees.append(staff)
+                        if staff_room:
+                            staff_room.room_occupants.append(name)
+                            return "{} a {} added successfully.".format(
+                                name, employee_type)
+                        else:
+                            self.unallocated_employees.append(name)
+                            return "The office is already full."
+                    except:
                         self.unallocated_employees.append(name)
-                        return "The office is already full."
-
+                        print("No office space available at the moment")
             else:
                 return "Invalid employee type."
 
@@ -247,8 +253,15 @@ class Amity(object):
                     occupants for occupants in rooms.room_occupants]:
                 return rooms
 
-    def load_state(self, db_name=None):
+    def load_state(self, db_name):
         """This method loads employees from the database to the application."""
+        if db_name:
+            engine = create_engine('sqlite:///{}'.format(db_name))
+        else:
+            engine = create_engine('sqlite:///amity_db')
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        Base.metadata.create_all(engine)    
         try:
             get_employee = session.query(Employees).one()
             name = get_employee.employee_name
@@ -256,7 +269,7 @@ class Amity(object):
             need_accomodation = get_employee.need_accomodation
             fellow = Fellow(name, employee_type, need_accomodation)
             self.employees.append(fellow)
-            return "Employee data obtained successfully."
+            print("Employee data obtained successfully.")
         except MultipleResultsFound:
             get_employees = session.query(Employees).all()
             for employee in get_employees:
@@ -278,7 +291,7 @@ class Amity(object):
             office = Office(room_name)
             self.offices.append(office)
             get_office.room_occupants = room_occupants
-            return "Office data obtained successfully."
+            print("Office data obtained successfully.")
         except MultipleResultsFound:
             get_offices = session.query(Offices).all()
             for offices in get_offices:
@@ -287,10 +300,10 @@ class Amity(object):
                 office = Office(room_name)
                 self.offices.append(office)
                 office.room_occupants = room_occupants
-            return "All office data obtained successfully."
+            print("All office data obtained successfully.")
 
         except NoResultFound:
-            return "The employees table is empty."
+            print("The offices table is empty.")
 
         # gets livingspaces from the living_spaces table living_spaces
         try:
@@ -299,7 +312,7 @@ class Amity(object):
             room_occupants = get_office.room_occupants.split(',')
             space = LivingSpace(room_name)
             self.living_spaces.append(space)
-            return "Livingspace data obtained successfully."
+            print("Livingspace data obtained successfully.")
         except MultipleResultsFound:
             get_living_spaces = session.query(LivingSpaces).all()
             for spaces in get_living_spaces:
@@ -308,10 +321,10 @@ class Amity(object):
                 space = LivingSpace(room_name)
                 self.living_spaces.append(space)
                 spaces.room_occupants = room_occupants
-            return "All livingspace data obtained successfully."
+            print("All livingspace data obtained successfully.")
 
         except NoResultFound:
-            return "The employees table is empty."
+            print("The employees table is empty.")
 
     def load_people(self, filename):
         """This method loads people from a \
@@ -335,7 +348,14 @@ class Amity(object):
 
     def save_state(self, db_name):
         """This methods saves the people in the app to a database"""
+        if db_name:
+            engine = create_engine('sqlite:///{}'.format(db_name))
+        else:
+            engine = create_engine('sqlite:///amity_db')
 
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        Base.metadata.create_all(engine)    
         if self.employees:
             for employees in self.employees:
                 employee = Employees(
@@ -359,12 +379,12 @@ class Amity(object):
                 try:
                     session.add(office)
                     session.commit()
-                    return "Offices added to database successfully."
+                    print("Offices added to database successfully.")
                 except Exception as e:
                     print("-------Error-------: {}".format(e))
                     session.rollback()
         else:
-            return "Amity has no offices."
+            print("Amity has no offices.")
 
         if self.living_spaces:
             for spaces in self.living_spaces:
@@ -380,7 +400,7 @@ class Amity(object):
                     print("-------Error-------: {}".format(e))
                     session.rollback()
         else:
-            return "Amity has no living spaces."
+            print("Amity has no living spaces.")
 
     def get_employees(self):
         """This methods returns all employee objects."""
