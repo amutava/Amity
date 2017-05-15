@@ -41,7 +41,7 @@ Below is a description of command available in the interative mode. Type help at
 
 `create_room  <room_name><room_type>...`
 
-This create a room or a list of rooms where room_type can either be office or living. Example usage:
+This creates a room or a list of rooms where room_type can either be office or living. Example usage:
 
 
 `add_person <first_name> <last_name> <role> [<wants_accommodation>]`
