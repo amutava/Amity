@@ -257,8 +257,10 @@ class Amity(object):
         """This method loads employees from the database to the application."""
         if db_name:
             engine = create_engine('sqlite:///{}'.format(db_name))
+            print("Database created.")
         else:
             engine = create_engine('sqlite:///amity_db')
+            print("Database created.")
         Session = sessionmaker(bind=engine)
         session = Session()
         Base.metadata.create_all(engine)    
@@ -350,8 +352,10 @@ class Amity(object):
         """This methods saves the people in the app to a database"""
         if db_name:
             engine = create_engine('sqlite:///{}'.format(db_name))
+            print("Database created.")
         else:
             engine = create_engine('sqlite:///amity_db')
+            print("Database created.")
 
         Session = sessionmaker(bind=engine)
         session = Session()
