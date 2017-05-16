@@ -309,9 +309,9 @@ class Amity(object):
 
         # gets livingspaces from the living_spaces table living_spaces
         try:
-            get_living_spaces = session.query(Employees).one()
-            room_name = get_office.room_name
-            room_occupants = get_office.room_occupants.split(',')
+            get_living_spaces = session.query(LivingSpaces).one()
+            room_name = get_living_spaces.room_name
+            room_occupants = get_living_spaces.room_occupants.split(',')
             space = LivingSpace(room_name)
             self.living_spaces.append(space)
             print("Livingspace data obtained successfully.")
