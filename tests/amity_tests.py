@@ -163,7 +163,7 @@ class TestAmity(TestCase):
         self.amity.create_room("Jade", "living_space")
         self.amity.load_people("employee.txt")
         self.assertEqual(self.amity.print_unallocated(
-            "unallocated.txt"), "Our waiting list is empty.")
+            "unallocated.txt"), "Allocations has been saved to {}".format("unallocated.txt"))
 
     def test_print_room(self):
         """Tests that all employees are printed to screen."""
