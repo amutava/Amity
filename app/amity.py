@@ -4,9 +4,10 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
 
-from  person import Fellow, Staff
-from  room import Office, LivingSpace
-from  model import Base, Employees, Offices, LivingSpaces
+
+from . person import Fellow, Staff
+from . room import Office, LivingSpace
+from . model import Base, Employees, Offices, LivingSpaces
 
 
 class Amity(object):

@@ -1,8 +1,8 @@
 from unittest import TestCase
 
-from app.amity import Amity
-from app.room import Office, LivingSpace
-from app.person import Fellow
+from .. app.amity import Amity
+from .. app.room import Office, LivingSpace
+from .. app.person import Fellow
 
 import os
 import sys
