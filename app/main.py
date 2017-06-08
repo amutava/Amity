@@ -20,10 +20,9 @@ Options:
 """
 import cmd
 from docopt import docopt, DocoptExit
-from amity import Amity
-
 from clint.textui import colored
 
+from amity import Amity
 
 def docopt_cmd(func):
     """
