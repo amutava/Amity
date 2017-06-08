@@ -1,9 +1,9 @@
 import random
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.exc import MultipleResultsFound
-
 
 from . person import Fellow, Staff
 from . room import Office, LivingSpace
@@ -53,7 +53,7 @@ class Amity(object):
             return "{} already in the system".format(name)
         else:
             if employee_type.lower() == "fellow":
-                
+
                 if need_accomodation.upper() == "Y":
                     try:
                         fellow_space = self.accomodate_fellow()
@@ -69,7 +69,7 @@ class Amity(object):
                             return "Room is full."
                     except:
                         self.unallocated_employees.append(name)
-                        print("No living space available at the moment.")        
+                        print("No living space available at the moment.")
                 else:
                     try:
                         fellow_office = self.allocate_employee()
@@ -84,7 +84,7 @@ class Amity(object):
                             return "Room is full."
                     except:
                         self.unallocated_employees.append(name)
-                        print("No office space available at the moment")    
+                        print("No office space available at the moment")
             elif employee_type.lower() == "staff":
                 if need_accomodation.upper() == "Y":
                     return "Sorry only fellows can be accomodated."
@@ -138,7 +138,8 @@ class Amity(object):
                         employee_name)
                 else:
                     if self.check_office(new_room_name):
-                        if self.check_office(new_room_name).room_type == self.check_old_employee_room(employee_name).room_type:
+                        if self.check_office(new_room_name).room_type == self.\
+                                check_old_employee_room(employee_name).room_type:
                             if len(self.check_office(new_room_name).room_occupants) < 6:
                                 self.check_old_employee_room(
                                     employee_name).room_occupants.remove(employee_name)
@@ -157,10 +158,12 @@ class Amity(object):
             elif self.check_living_space(new_room_name):
                 if self.check_old_employee_room(employee_name).\
                         room_name == new_room_name:
-                    return "{} cannot be reallocated to the same living space.".format(employee_name)
+                    return "{} cannot be reallocated to the same living space.".format(
+                        employee_name)
                 else:
                     if self.check_living_space(new_room_name):
-                        if self.check_living_space(new_room_name).room_type == self.check_old_employee_room(employee_name).room_type:
+                        if self.check_living_space(new_room_name).room_type == self.\
+                                check_old_employee_room(employee_name).room_type:
                             if len(self.check_living_space(new_room_name).room_occupants) < 4:
                                 self.check_old_employee_room(
                                     employee_name).room_occupants.\
@@ -172,11 +175,14 @@ class Amity(object):
                             else:
                                 return "{} if full.".format(new_room_name)
                         else:
-                            return "{} cannot be reallocated to different room type.".format(employee_name)
+                            return "{} cannot be reallocated to different room type.".\
+                                format(employee_name)
                     else:
-                        return "{} is not a living space in amity".format(new_room_name)
+                        return "{} is not a living space in amity".\
+                            format(new_room_name)
             else:
-                return "Amity has no room with the name {}".format(new_room_name)
+                return "Amity has no room with the name {}".\
+                    format(new_room_name)
         else:
             return "{} is not in the system.".format(
                 employee_name)
@@ -196,7 +202,7 @@ class Amity(object):
         people = ""
 
         for rooms in self.living_spaces + self.offices:
-            people += rooms.room_name 
+            people += rooms.room_name
             people += '-' * 20 + '\n'
             if len(rooms.room_occupants) > 0:
                 people += "\n".join(rooms.room_occupants)
@@ -215,7 +221,8 @@ class Amity(object):
         """This method prints the unallocated employees to a textfile."""
         employees = ""
         if self.unallocated_employees + self.unaccomodated_fellows:
-            employees += "\n".join(self.unallocated_employees + self.unaccomodated_fellows)
+            employees += "\n".join(self.unallocated_employees +
+                                   self.unaccomodated_fellows)
             print(employees)
         else:
             return "Our waiting list is empty."
@@ -264,7 +271,7 @@ class Amity(object):
             print("Database created.")
         Session = sessionmaker(bind=engine)
         session = Session()
-        Base.metadata.create_all(engine)    
+        Base.metadata.create_all(engine)
         try:
             get_employee = session.query(Employees).one()
             name = get_employee.employee_name
@@ -360,7 +367,7 @@ class Amity(object):
 
         Session = sessionmaker(bind=engine)
         session = Session()
-        Base.metadata.create_all(engine)    
+        Base.metadata.create_all(engine)
         if self.employees:
             for employees in self.employees:
                 employee = Employees(
