@@ -139,7 +139,7 @@ class TestAmity(TestCase):
         """This method tests loading people form a file that doesn't exist."""
         self.amity.create_room("accra", "office")
         self.amity.create_room("Jade", "living_space")
-        self.assertEqual(self.amity.load_people("employees.txt"),
+        self.assertEqual(self.amity.load_people("employeessd.txt"),
                          "Error: can\'t find file or read data.")
 
     def test_load_people(self):

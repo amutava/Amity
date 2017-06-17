@@ -84,10 +84,8 @@ class Amity(cmd.Cmd):
         """Usage: create_room <room_name> <room_type>"""
         room_name = arg["<room_name>"]
         room_type = arg["<room_type>"]
-        if room_name.isalpha() and room_type.isalpha():
-            print(amity.create_room(room_name, room_type))
-        else:    
-            print("Room name and room type should be alphabetic.")
+        print(amity.create_room(room_name, room_type))
+       
         
 
     @docopt_cmd
@@ -100,15 +98,12 @@ class Amity(cmd.Cmd):
         name = first_name + " " + last_name
         employee_type = arg["<employee_type>"]
         need_accomodation = arg["<need_accomodation>"]
-        if first_name.isalpha() and last_name.isalpha() and \
-                name.isalpha() and employee_type.isalpha() and need_accomodation.isalpha():
-                if need_accomodation == "":
-                    need_accomodation = "N"
-                    print(amity.add_person(name, employee_type, need_accomodation))
-                else:
-                    print(amity.add_person(name, employee_type, need_accomodation))
+        if need_accomodation == "":
+            need_accomodation = "N"
+            print(amity.add_person(name, employee_type, need_accomodation))
         else:
-            print("Only alphabets are required.")            
+            print(amity.add_person(name, employee_type, need_accomodation))
+               
 
     @docopt_cmd
     def do_reallocate_employee(self, arg):
@@ -118,19 +113,13 @@ class Amity(cmd.Cmd):
         last_name = arg["<last_name>"]
         name = first_name + " " + last_name
         new_room_name = arg["<new_room_name>"]
-        if first_name.isalpha() and last_name.isalpha() and \
-                name.isalpha() and new_room_name.isalpha():
-                print(amity.reallocate_employee(name, new_room_name))
-        else:
-            print("Only alphabets are required.")
-    @docopt_cmd
+        print(amity.reallocate_employee(name, new_room_name))
+    @docopt_cmd  
     def do_print_room(self, arg):
         """Usage: print_room [<room_name>]"""
         room_name = arg["<room_name>"]
-        if room_name.isalpha():
-            print(amity.print_room(room_name))
-        else:
-            print("Room name should be alphabet.")    
+        print(amity.print_room(room_name))
+        
 
     @docopt_cmd
     def do_print_allocations(self, arg):
@@ -139,10 +128,8 @@ class Amity(cmd.Cmd):
 
         """
         filename = arg["--o"]
-        if filename.isalpha():
-            amity.print_allocations(filename)
-        else:
-            print("Filename should be alphabet.")    
+        amity.print_allocations(filename)
+       
 
     @docopt_cmd
     def do_print_unallocated(self, arg):
@@ -150,10 +137,7 @@ class Amity(cmd.Cmd):
 
         """
         filename = arg["--o"]
-        if filename.isalpha():
-            amity.print_unallocated(filename)
-        else:
-            print("Filename should be alphabet.")    
+        amity.print_unallocated(filename)    
 
     @docopt_cmd
     def do_load_state(self, arg):
@@ -169,10 +153,8 @@ class Amity(cmd.Cmd):
     def do_load_people(self, arg):
         """ Usage: load_people <filename>"""
         filename = arg["<filename>"]
-        if filename.isalpha():
-            print(amity.load_people(filename))
-        else:
-            print("Filename should be alphabet.")    
+        print(amity.load_people(filename))
+            
 
     @docopt_cmd
     def do_save_state(self, arg):
