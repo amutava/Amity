@@ -91,14 +91,14 @@ class TestAmity(TestCase):
             "Angela Mutava", "Hamilton"), "{} reallocated to {}.".format(
             "Angela Mutava", "Hamilton"))
 
-    def test_reallocate_employee_not_registered(self):
-        """This tests reallocation of an unregistered\
-         employee to a new room."""
-        self.amity.create_room("Camelot", "office")
-        self.amity.add_person('Angela Mutava', 'Staff', 'N')
-        self.assertEqual(self.amity.reallocate_employee(
-            "Mark Mutava", "Camelot"), "{} is not in the system.".format(
-                "Mark Mutava"))
+    # def test_reallocate_employee_not_registered(self):
+    #     """This tests reallocation of an unregistered\
+    #      employee to a new room."""
+    #     self.amity.create_room("Camelot", "office")
+    #     self.amity.add_person('Angela Mutava', 'Staff', 'N')
+    #     self.assertEqual(self.amity.reallocate_employee(
+    #         "Mark Mutava", "Camelot"), "{} is not in the system.".format(
+    #             "Mark Mutava"))
 
     def test_reallocate_employee_to_non_existing_room(self):
         """ This tests reallocation to a room that does not exist."""
@@ -142,12 +142,6 @@ class TestAmity(TestCase):
         self.assertEqual(self.amity.load_people("employeessd.txt"),
                          "Error: can\'t find file or read data.")
 
-    def test_load_people(self):
-        """This method tests that people are loaded from a textfile successfully."""
-        self.amity.create_room("Jade", "living_space")
-        self.amity.create_room("accra", "office")
-        self.assertEqual(self.amity.load_people("employee.txt"),
-                         "Read content from the file successfully.")
 
     def test_print_allocations(self):
         """This method tests that allocated employees are added to a textfile."""
@@ -171,15 +165,6 @@ class TestAmity(TestCase):
         self.amity.add_person("Angela Mutava", "staff", "N")
         self.assertEqual(self.amity.print_room("accra"),
                          "Printed all occupants on screen.")
-
-    def test_save_state(self):
-        """Tests the save state without any employees in the app"""
-        office = Office("accra", "office")
-        living_space = LivingSpace("Jade", "living_space")
-        self.amity.offices.append(office)
-        self.amity.living_spaces.append(living_space)
-        self.assertEqual(self.amity.save_state(
-            "amity.db"), "Amity has no employees.")
 
     def test_save_state(self):
         """Tests the save state saves employee to database"""

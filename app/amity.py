@@ -352,9 +352,9 @@ class Amity(object):
             print("All employees loaded successfully from  textfile.")
 
         except IOError:
-            return "Error: can\'t find file or read data."
+            return"Error: can\'t find file or read data."
         else:
-            return "Read content from the file successfully."
+            print("Read content from the file successfully.")
 
     def save_state(self, db_name):
         """This methods saves the people in the app to a database"""
@@ -376,7 +376,7 @@ class Amity(object):
                 try:
                     session.add(employee)
                     session.commit()
-                    print("Employees added to database successfully.")
+                    return "Employees added to database successfully."
                 except Exception as e:
                     print("-------Error-------: {}".format(e))
                     session.rollback()
