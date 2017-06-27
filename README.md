@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/andela-amutava/Amity.svg?branch=master)](https://travis-ci.org/andela-amutava/Amity)
+[![Build Status](https://travis-ci.org/andela-amutava/Amity.svg?branch=develop)](https://travis-ci.org/andela-amutava/Amity)
 
 # Amity
 ## Introduction
