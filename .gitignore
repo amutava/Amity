@@ -87,12 +87,5 @@ ENV/
 
 # Rope project settings
 .ropeproject
-	
-If .DS_Store was never added to your git repository, simply add it to your .gitignore file.
-
-If you don't have one, create a file called
-
-.gitignore
-In your the root directory of your app and simply write
 
 **/.DS_Store
